@@ -1,3 +1,8 @@
+
+# Add this at the top of your .gitignore to ensure the Backend folder is tracked
+!Backend/
+!frontend/
+
 # Ignore the .vscode folder (Visual Studio Code settings)
 .vscode/
 
@@ -23,8 +28,7 @@ AppData/
 *.exe
 *.pdf
 
-# Ignore the Backend directory if you don't want it tracked
-/Backend/
+
 
 # Dependency directories
 bower_components/
