@@ -1,6 +1,6 @@
-import axiosConfig from "../../app/axiosConfig";
+import axiosConfig from "../../app/axiosconfig";
 
-export const register = async (SignupData) => {
+export const Signup = async (SignupData) => {
   try {
     const response = await axiosConfig.post(
       `/auth/send-signupdata`,
@@ -9,17 +9,17 @@ export const register = async (SignupData) => {
     console.log(response);
     return response;
   } catch (error) {
-    console.error("Error Register", error);
+    console.error("Error signup", error);
     throw error;
   }
 };
-export const login = async (SigninData) => {
+
+export const signin = async (signinData) => {
   try {
-    const response = await axiosConfig.post(`/auth/send-logindata`, SigninData);
-    console.log(response);
+    const response = await axiosConfig.post(`/auth/send-logindata`, signinData);
     return response;
   } catch (error) {
-    console.error("Logi Error", error);
+    console.error("error in signin", error);
     throw error;
   }
 };

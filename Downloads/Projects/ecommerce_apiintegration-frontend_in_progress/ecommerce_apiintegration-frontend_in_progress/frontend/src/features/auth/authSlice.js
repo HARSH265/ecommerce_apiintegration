@@ -1,61 +1,69 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { register, login } from "./authService";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { Signup, signin } from "../auth/authService";
 
-export const signup = createAsyncThunk("auth/signup", async (signupData) => {
+export const register = createAsyncThunk("auth/signup", async (signupData) => {
   try {
-    const response = await register(signupData);
+    const response = await Signup(signupData);
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error("Error in signup thunk", error);
-  }
-});
-
-export const signin = createAsyncThunk("auth/signin", async (SigninData) => {
-  try {
-    const response = await login(SigninData);
-    console.log(response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error in signin", error);
+    console.error("Error in Register thunk", error);
     throw (
       error.response?.data?.message || error.message || "Something went wrong"
     );
   }
 });
 
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await signin(credentials);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message);
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    email: null,
+    user: null,
+    token: null,
     loading: false,
+    error: null,
   },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(signup.pending, (state) => {
+      .addCase(register.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
-      .addCase(signup.fulfilled, (state, action) => {
+      .addCase(register.fulfilled, (state, action) => {
         state.loading = false;
-        state.email = action.payload.data.email;
-        state.message = action.payload.message;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
       })
-      .addCase(signup.rejected, (state, action) => {
+      .addCase(register.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
-      .addCase(signin.pending, (state) => {
+      .addCase(loginUser.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
-      .addCase(signin.fulfilled, (state, action) => {
+      .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.email = action.payload.data.email;
-        state.message = action.payload.message;
+        state.token = action.payload.token;
+        state.user = action.payload.user;
       })
-      .addCase(signin.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   },
 });
+
 export default authSlice.reducer;

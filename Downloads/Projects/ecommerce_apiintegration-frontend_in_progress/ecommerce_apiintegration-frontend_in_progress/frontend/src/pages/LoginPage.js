@@ -1,35 +1,36 @@
-import React from 'react';
-import { Button, Input, Form, message } from 'antd';
+import React from "react";
+import { Button, Input, Form, message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
 
-  const onFinish = async (values) => {
-    console.log('Form values: ', values);
+  const handleSubmit = async (values) => {
     try {
-      message.success('Login successful!'); 
-      form.resetFields(); 
+      await dispatch(loginUser(values)).unwrap();
+      message.success("Login successful!");
+      navigate("/homepage");
     } catch (error) {
-      message.error('Login failed!'); 
+      message.error("Login failed!");
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div style={{ maxWidth: "400px", margin: "0 auto" }}>
       <h2>Login</h2>
-      <p style={{ color: 'red' }}>error</p>
-      <Form
-        form={form}
-        name="login"
-        onFinish={onFinish}
-        layout="vertical"
-      >
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <Form form={form} name="login" onFinish={handleSubmit} layout="vertical">
         <Form.Item
           name="email"
           label="Email"
           rules={[
-            { required: true, message: 'Please input your email!' },
-            { type: 'email', message: 'Please enter a valid email!' }
+            { required: true, message: "Please input your email!" },
+            { type: "email", message: "Please enter a valid email!" },
           ]}
         >
           <Input placeholder="Enter your email" />
@@ -38,13 +39,13 @@ const LoginPage = () => {
         <Form.Item
           name="password"
           label="Password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
+          rules={[{ required: true, message: "Please input your password!" }]}
         >
           <Input.Password placeholder="Enter your password" />
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+          <Button type="primary" htmlType="submit" loading={loading}>
             Login
           </Button>
         </Form.Item>

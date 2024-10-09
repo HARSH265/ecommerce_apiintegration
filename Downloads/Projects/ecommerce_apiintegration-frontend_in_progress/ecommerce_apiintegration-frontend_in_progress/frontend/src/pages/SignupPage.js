@@ -1,33 +1,36 @@
-import React, { useRef, useState, useEffect } from "react";
+import React from "react";
 import { Form, Input, Button, message } from "antd";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { signup } from "../features/auth/authSlice";
 import { Formik } from "formik";
+import { useDispatch } from "react-redux";
+import { register } from "../features/auth/authSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const initialValues = {
     name: "",
     email: "",
     password: "",
   };
-
   const onFinish = async (values) => {
-    console.log("Form values: ", values);
-
-    const signupData = {
+    const SignUpData = {
       name: values.name,
       email: values.email,
       password: values.password,
     };
+
     try {
-      await dispatch(signup(signupData)).unwrap();
+      await dispatch(register(SignUpData)).unwrap();
+      console.log("Received values of form: ", values);
       message.success("Signup successful!");
+      navigate("/login");
       form.resetFields();
     } catch (error) {
       message.error("Signup failed!");
+      console.error("signup errro", error);
     }
   };
 
@@ -50,19 +53,22 @@ const SignupPage = () => {
             layout="vertical"
           >
             <Form.Item
+              name="name"
               label="Name"
               rules={[{ required: true, message: "Please input your name!" }]}
             >
               <Input
-                placeholder="Enter your Name"
+                placeholder="Enter your name"
                 value={values.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 name="name"
               />
+              {errors.name && touched.name && <div>{errors.name}</div>}
             </Form.Item>
 
             <Form.Item
+              name="email"
               label="Email"
               rules={[
                 { required: true, message: "Please input your email!" },
@@ -70,27 +76,32 @@ const SignupPage = () => {
               ]}
             >
               <Input
-                placeholder="Enter your Email"
+                placeholder="Email"
                 value={values.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 name="email"
               />
+              {errors.email && touched.email && <div>{errors.email}</div>}
             </Form.Item>
 
             <Form.Item
+              name="password"
               label="Password"
               rules={[
                 { required: true, message: "Please input your password!" },
               ]}
             >
               <Input.Password
-                placeholder="Enetr your Password"
+                placeholder="Password"
                 value={values.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 name="password"
               />
+              {errors.password && touched.password && (
+                <div>{errors.password}</div>
+              )}
             </Form.Item>
 
             <Form.Item>
@@ -101,6 +112,7 @@ const SignupPage = () => {
               >
                 Sign Up
               </Button>
+              <Link to={"/login"}>Already a user,Login</Link>
             </Form.Item>
           </Form>
         )}

@@ -1,19 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ProductCard from '../components/ProductCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProducts } from '../features/products/productSlice';
 
 const ProductListingPage = () => {
-  
+  const dispatch= useDispatch();
+  const {items,loading,error} = useSelector((state)=>state.products)
 
+
+  useEffect(()=>{
+    dispatch(fetchProducts());
+  },[dispatch])
  
 
   return (
     <div>
-      <h2>Product Listing</h2>
-      <p>Loading...</p>
-       <p style={{ color: 'red' }}>error</p>
+      
+      {loading && <p>Loading...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+ 
       <div>
         
-          <ProductCard/>
+      {items.map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
        
       </div>
     </div>
