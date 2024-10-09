@@ -1,9 +1,0 @@
-# Set the default behavior for all text files
-* text=auto
-
-# Explicitly set some file types to be treated as binary (no LF/CRLF changes)
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.svg binary
-*.pdf binary
