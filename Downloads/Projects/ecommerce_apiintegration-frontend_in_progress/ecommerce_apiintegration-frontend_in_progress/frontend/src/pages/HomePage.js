@@ -7,31 +7,37 @@ import CartPage from "./CartPage";
 import AdminPage from "./AdminPage";
 
 const { Content } = Layout;
-const { TabPane } = Tabs;
 
 const HomePage = () => {
+  const tabsItems = [
+    {
+      key: "home",
+      label: "Home",
+      children: (
+        <>
+          <h2>Welcome to the E-Commerce App</h2>
+          <ProductListingPage />
+        </>
+      ),
+    },
+    {
+      key: "cart",
+      label: "Cart",
+      children: <CartPage />,
+    },
+    {
+      key: "admin",
+      label: "Admin",
+      children: <AdminPage />,
+    },
+  ];
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Header />
       <Content style={{ padding: "20px", textAlign: "center" }}>
-        <Tabs defaultActiveKey="home">
-          <TabPane tab="Home" key="home">
-            <h2>Welcome to the E-Commerce App</h2>
-
-            <div>
-              <ProductListingPage />
-            </div>
-          </TabPane>
-          {/* <TabPane tab="Products" key="products">
-            <ProductListingPage /> 
-          </TabPane> */}
-          <TabPane tab="Cart" key="cart">
-            <CartPage />
-          </TabPane>
-          <TabPane tab="Admin" key="admin">
-            <AdminPage />
-          </TabPane>
-        </Tabs>
+        <Tabs defaultActiveKey="home" items={tabsItems} />{" "}
+        {/* Updated to use items prop */}
       </Content>
       <Footer style={{ textAlign: "center" }}>
         © 2024 E-Commerce App. All Rights Reserved.

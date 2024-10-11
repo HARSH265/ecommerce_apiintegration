@@ -1,8 +1,13 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Button } from 'antd';
-import { removeFromCart} from '../features/cart/cartSlice';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Button } from "antd";
+import {
+  removeFromCart,
+  addToCart,
+  decreaseQuantity,
+} from "../features/cart/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons"; // Import icons
 
 const CartPage = () => {
   const { items } = useSelector((state) => state.cart);
@@ -13,12 +18,22 @@ const CartPage = () => {
     dispatch(removeFromCart(itemId));
   };
 
-  const handleProceedToCheckout = () => {
-    navigate('/checkout'); 
+  const handleDecreaseQuantity = (itemId) => {
+    dispatch(decreaseQuantity(itemId)); // Decrease the quantity of an item
   };
 
- 
-  const totalPrice = items.reduce((total, item) => total + item.price, 0);
+  const handleIncreaseQuantity = (item) => {
+    dispatch(addToCart(item)); // Increase the quantity of an item
+  };
+
+  const handleProceedToCheckout = () => {
+    navigate("/checkout");
+  };
+
+  const totalPrice = items.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
   return (
     <div>
@@ -27,17 +42,43 @@ const CartPage = () => {
         <p>Your cart is empty</p>
       ) : (
         <>
-          {items.map(item => (
-            <div key={item.id} style={{ borderBottom: '1px solid #ccc', padding: '10px' }}>
+          {items.map((item) => (
+            <div
+              key={item._id}
+              style={{ borderBottom: "1px solid #ccc", padding: "10px" }}
+            >
               <h3>{item.name}</h3>
               <p>Price: ${item.price.toFixed(2)}</p>
-              <Button onClick={() => handleRemoveItem(item.id)} type="primary" danger>
+              <p>
+                Quantity:
+                <Button
+                  onClick={() => handleDecreaseQuantity(item._id)}
+                  icon={<MinusOutlined />}
+                  style={{ marginLeft: "10px", marginRight: "10px" }}
+                />
+                {item.quantity}
+                <Button
+                  onClick={() => handleIncreaseQuantity(item)}
+                  icon={<PlusOutlined />}
+                  style={{ marginLeft: "10px", marginRight: "10px" }}
+                />
+              </p>
+              <Button
+                onClick={() => handleRemoveItem(item._id)}
+                type="primary"
+                danger
+                style={{ marginTop: "10px" }}
+              >
                 Remove
               </Button>
             </div>
           ))}
           <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
-          <Button type="primary" onClick={handleProceedToCheckout} style={{ marginTop: '20px' }}>
+          <Button
+            type="primary"
+            onClick={handleProceedToCheckout}
+            style={{ marginTop: "20px" }}
+          >
             Proceed to Checkout
           </Button>
         </>

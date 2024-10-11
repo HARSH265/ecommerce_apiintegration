@@ -31,7 +31,7 @@ export const updateItem = async (UpdateItemData) => {
 export const GetItem = async (GetItemData) => {
   try {
     const response = await axiosConfig.get("/auth/get-itemdata", GetItemData);
-    console.log(response);
+
     return response;
   } catch (error) {
     console.error("Get Item Error", error);
